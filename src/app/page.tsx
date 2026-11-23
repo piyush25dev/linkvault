@@ -1,9 +1,53 @@
 'use client';
+import { useState } from 'react';
 import Link from 'next/link';
-import { Box, Button, Chip, Container, Paper, Stack, Typography, alpha } from '@mui/material';
-import { BookmarkRounded, AutoAwesomeRounded, SearchRounded, FolderRounded, StarRounded, DarkModeRounded, LockRounded, ArrowForwardRounded } from '@mui/icons-material';
+import { alpha, Box, Button, Chip, Container, IconButton, Menu, MenuItem, Paper, Stack, Typography } from '@mui/material';
+import { BookmarkRounded, MenuRounded } from '@mui/icons-material';
+import { AutoAwesomeRounded, SearchRounded, FolderRounded, StarRounded, DarkModeRounded, LockRounded, ArrowForwardRounded } from '@mui/icons-material';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
+
+
+function LandingHeader() {
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const close = () => setAnchor(null);
+
+  return (
+    <Stack direction="row" alignItems="center" justifyContent="space-between" gap={1} py={{ xs: 2, md: 3 }}>
+      {/* Logo: links home, never shrinks */}
+      <Stack component={Link} href="/" direction="row" spacing={1.25} alignItems="center"
+        sx={{ textDecoration: 'none', color: 'text.primary', flexShrink: 0, minWidth: 0 }}>
+        <Box sx={{
+          width: { xs: 32, sm: 36 }, height: { xs: 32, sm: 36 }, borderRadius: 2.5, display: 'grid', placeItems: 'center',
+          color: '#fff', backgroundImage: 'linear-gradient(135deg,#8C74C4,#4B3680)',
+        }}>
+          <BookmarkRounded fontSize="small" />
+        </Box>
+        <Typography variant="h6" fontWeight={800} noWrap
+          sx={{ fontSize: { xs: 18, sm: 20 }, '@media (max-width:339px)': { display: 'none' } }}>
+          LinkVault
+        </Typography>
+      </Stack>
+
+      {/* Tablet and desktop: full buttons */}
+      <Stack direction="row" spacing={1} alignItems="center" sx={{ display: { xs: 'none', sm: 'flex' } }}>
+        <ThemeToggle />
+        <Button component={Link} href="/login" color="inherit">Log in</Button>
+        <Button component={Link} href="/register" variant="contained">Get started</Button>
+      </Stack>
+
+      {/* Mobile: theme toggle + menu */}
+      <Stack direction="row" spacing={0.5} alignItems="center" sx={{ display: { xs: 'flex', sm: 'none' } }}>
+        <ThemeToggle />
+        <IconButton aria-label="Open menu" onClick={e => setAnchor(e.currentTarget)}><MenuRounded /></IconButton>
+        <Menu anchorEl={anchor} open={!!anchor} onClose={close} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <MenuItem component={Link} href="/login" onClick={close}>Log in</MenuItem>
+          <MenuItem component={Link} href="/register" onClick={close} sx={{ fontWeight: 700, color: 'primary.main' }}>Get started</MenuItem>
+        </Menu>
+      </Stack>
+    </Stack>
+  );
+}
 const features = [
   { icon: <AutoAwesomeRounded />, t: 'Smart saving', d: 'Paste a URL and LinkVault fetches the title, description and icon for you.' },
   { icon: <FolderRounded />, t: 'Collections', d: 'Group links by project or topic. Deleting a collection never deletes your links.' },
@@ -18,10 +62,7 @@ export default function Home() {
   return (
     <Box>
       <Container maxWidth="lg">
-        <Stack direction="row" alignItems="center" justifyContent="space-between" py={3}>
-          <Stack direction="row" spacing={1.25} alignItems="center"><Box sx={{ width: 36, height: 36, borderRadius: 2.5, display: 'grid', placeItems: 'center', color: '#fff', backgroundImage: 'linear-gradient(135deg,#8C74C4,#4B3680)' }}><BookmarkRounded fontSize="small" /></Box><Typography variant="h6" fontWeight={800}>LinkVault</Typography></Stack>
-          <Stack direction="row" spacing={1} alignItems="center"><ThemeToggle /><Button component={Link} href="/login" color="inherit">Log in</Button><Button component={Link} href="/register" variant="contained">Get started</Button></Stack>
-        </Stack>
+        <LandingHeader />
 
         <Box sx={{ pt: { xs: 7, md: 11 }, pb: { xs: 6, md: 8 }, textAlign: 'center', maxWidth: 800, mx: 'auto' }}>
           <Chip label="Your personal corner of the internet" color="primary" variant="outlined" sx={{ mb: 3, bgcolor: t => alpha(t.palette.primary.main, 0.08) }} />
