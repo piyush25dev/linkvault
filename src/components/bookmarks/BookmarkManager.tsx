@@ -30,6 +30,24 @@ const copy: Record<Filter, [string, string]> = {
   trash: ['Trash is empty', 'Deleted bookmarks wait here so you can restore them.'],
 };
 
+// Live screenshot of the page (free Microlink endpoint). Loaded lazily, so only cards near the viewport request one.
+const shotUrl = (url: string) => `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`;
+
+// Card header: the site's own preview image if it has one, else a live page screenshot, else a letter tile.
+// The letter tile shows while the image loads and stays if every source fails.
+function PagePreview({ b }: { b: Bookmark }) {
+  const sources = useMemo(() => [b.image, shotUrl(b.url)].filter(Boolean) as string[], [b.image, b.url]);
+  const [i, setI] = useState(0); const [loaded, setLoaded] = useState(false);
+  const src = sources[i];
+  return (
+    <Box sx={{ position: 'relative', height: 140, overflow: 'hidden', display: 'grid', placeItems: 'center', fontSize: 34, fontWeight: 800, color: 'primary.main', background: t => `linear-gradient(135deg, ${alpha(t.palette.primary.main, 0.25)}, ${alpha(t.palette.secondary.main, 0.18)})` }}>
+      {(b.domain || b.title)[0]?.toUpperCase()}
+      {src && <Box component="img" key={src} src={src} alt={`Preview of ${b.domain}`} loading="lazy" onLoad={() => setLoaded(true)} onError={() => { setLoaded(false); setI(n => n + 1); }}
+        sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', opacity: loaded ? 1 : 0, transition: 'opacity .3s ease' }} />}
+    </Box>
+  );
+}
+
 function Inner({ filter = 'all', limit, compact }: Props) {
   const { user } = useAuth(); const router = useRouter(); const pathname = usePathname(); const params = useSearchParams();
   const [items, setItems] = useState<Bookmark[]>([]); const [cols, setCols] = useState<Collection[]>([]); const [loading, setLoading] = useState(true);
@@ -117,8 +135,7 @@ function Inner({ filter = 'all', limit, compact }: Props) {
           <Box display="grid" gap={2.5} gridTemplateColumns={{ xs: '1fr', sm: 'repeat(2,1fr)', lg: 'repeat(3,1fr)', xl: 'repeat(4,1fr)' }}>
             {visible.map(b => (
               <Card key={b.id} sx={{ display: 'flex', flexDirection: 'column', opacity: b.isDeleted ? 0.85 : 1 }}>
-                {b.image ? <Box component="img" src={b.image} alt="" loading="lazy" onError={e => { e.currentTarget.style.display = 'none'; }} sx={{ width: '100%', height: 120, objectFit: 'cover' }} />
-                  : <Box sx={{ height: 72, display: 'grid', placeItems: 'center', fontSize: 30, fontWeight: 800, color: 'primary.main', background: t => `linear-gradient(135deg, ${alpha(t.palette.primary.main, 0.25)}, ${alpha(t.palette.secondary.main, 0.18)})` }}>{(b.domain || b.title)[0]?.toUpperCase()}</Box>}
+                <PagePreview b={b} />
                 <CardContent sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 1.25 }}>
                   <Stack direction="row" alignItems="center" spacing={1.25}>
                     <Avatar variant="rounded" src={b.favicon || `https://www.google.com/s2/favicons?domain=${b.domain}&sz=64`} sx={{ width: 34, height: 34, bgcolor: 'action.hover' }} imgProps={{ loading: 'lazy' }}>{b.title[0]}</Avatar>

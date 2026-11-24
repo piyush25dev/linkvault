@@ -31,17 +31,21 @@ export function AppThemeProvider({ children }: { children: React.ReactNode }) {
         text: dark ? { primary: '#F3F0FA', secondary: '#A29BB8' } : { primary: '#1B1530', secondary: '#6B6580' },
         divider: dark ? 'rgba(255,255,255,.08)' : 'rgba(103,77,159,.12)',
       },
-      shape: { borderRadius: 14 },
+      // shape: { borderRadius: 14 },
       typography: {
         fontFamily: 'var(--font-inter, Inter), system-ui, -apple-system, "Segoe UI", sans-serif',
         h2: { letterSpacing: '-0.03em' }, h4: { letterSpacing: '-0.025em' }, h5: { letterSpacing: '-0.02em' }, h6: { letterSpacing: '-0.015em' },
         button: { textTransform: 'none', fontWeight: 600 },
       },
       components: {
-        MuiCssBaseline: { styleOverrides: { body: {
-          backgroundImage: `radial-gradient(1100px 520px at 88% -8%, ${alpha(main, 0.14)}, transparent 62%), radial-gradient(900px 460px at -8% 2%, ${alpha(dark ? '#4FD1C0' : '#2FB3A3', 0.08)}, transparent 60%)`,
-          backgroundAttachment: 'fixed', WebkitFontSmoothing: 'antialiased',
-        }, '::selection': { background: alpha(main, 0.3) } } },
+        MuiCssBaseline: {
+          styleOverrides: {
+            body: {
+              backgroundImage: `radial-gradient(1100px 520px at 88% -8%, ${alpha(main, 0.14)}, transparent 62%), radial-gradient(900px 460px at -8% 2%, ${alpha(dark ? '#4FD1C0' : '#2FB3A3', 0.08)}, transparent 60%)`,
+              backgroundAttachment: 'fixed', WebkitFontSmoothing: 'antialiased',
+            }, '::selection': { background: alpha(main, 0.3) }
+          }
+        },
         MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
         MuiCard: { styleOverrides: { root: { borderRadius: 18, border: `1px solid ${dark ? 'rgba(255,255,255,.08)' : 'rgba(103,77,159,.12)'}`, boxShadow: dark ? '0 12px 30px -16px rgba(0,0,0,.7)' : '0 10px 28px -16px rgba(31,18,66,.18)', transition: 'transform .25s ease, box-shadow .25s ease, border-color .25s ease', '&:hover': { transform: 'translateY(-3px)', borderColor: alpha(main, 0.4), boxShadow: `0 20px 40px -18px ${alpha(main, 0.45)}` } } } },
         MuiButton: {
