@@ -16,14 +16,14 @@ export default function Dashboard() {
   useEffect(() => { if (user) apiFetch<{ stats: Stats }>('/api/dashboard').then(r => setStats(r.stats)).catch(() => setStats({ bookmarks: 0, favorites: 0, collections: 0, trash: 0 })); }, [user]);
   const first = (user?.displayName || user?.email?.split('@')[0] || '').split(' ')[0];
   const cards = [
-    { label: 'Total bookmarks', value: stats?.bookmarks, icon: <BookmarkRounded />, href: '/dashboard/bookmarks', c: '#674D9F' },
+    { label: 'Total bookmarks', value: stats?.bookmarks, icon: <BookmarkRounded />, href: '/dashboard/bookmarks', c: '#0E7C7B' },
     { label: 'Favorites', value: stats?.favorites, icon: <StarRounded />, href: '/dashboard/favorites', c: '#F5A524' },
-    { label: 'Collections', value: stats?.collections, icon: <FolderRounded />, href: '/dashboard/collections', c: '#2FB3A3' },
+    { label: 'Collections', value: stats?.collections, icon: <FolderRounded />, href: '/dashboard/collections', c: '#3B82F6' },
     { label: 'In trash', value: stats?.trash, icon: <DeleteOutlineRounded />, href: '/dashboard/trash', c: '#E5484D' },
   ];
   return (
     <DashboardShell title="Overview" subtitle="Your vault at a glance">
-      <Box sx={{ p: { xs: 3, md: 4 }, mb: 3, borderRadius: 5, color: '#fff', backgroundImage: 'linear-gradient(135deg,#4B3680,#674D9F 55%,#8C74C4)', boxShadow: '0 24px 50px -24px rgba(103,77,159,.8)' }}>
+      <Box sx={{ p: { xs: 3, md: 4 }, mb: 3, borderRadius: 5, color: '#fff', backgroundImage: 'linear-gradient(135deg,#095E5F,#0E7C7B 55%,#3FB5AE)', boxShadow: '0 24px 50px -24px rgba(14,124,123,.8)' }}>
         <Typography variant="h4" fontWeight={800}>Welcome back{first ? `, ${first}` : ''} 👋</Typography>
         <Typography sx={{ opacity: 0.85, mt: 0.75 }}>Save a link, tidy a collection, or find something you stashed away.</Typography>
       </Box>

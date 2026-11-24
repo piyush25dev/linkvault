@@ -51,7 +51,7 @@ export function AuthCard({ mode }: { mode: 'login' | 'register' }) {
 
   return (
     <Box display="grid" minHeight="100vh" gridTemplateColumns={{ xs: '1fr', md: '1.05fr 1fr' }}>
-      <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', justifyContent: 'space-between', p: 6, color: '#fff', backgroundImage: 'linear-gradient(145deg,#3A2A66,#674D9F 55%,#8C74C4)' }}>
+      <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', justifyContent: 'space-between', p: 6, color: '#fff', backgroundImage: 'linear-gradient(145deg,#095E5F,#0E7C7B 55%,#3FB5AE)' }}>
         <Stack direction="row" spacing={1.25} alignItems="center"><BookmarkRounded /><Typography fontWeight={800} fontSize={22}>LinkVault</Typography></Stack>
         <Box>
           <Typography variant="h3" fontWeight={800} sx={{ letterSpacing: '-0.03em', lineHeight: 1.1 }}>Every link worth keeping, one calm place.</Typography>
