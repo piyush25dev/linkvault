@@ -19,7 +19,7 @@ export function DashboardShell({ children, title, subtitle, variant = 'user', ac
       <Sidebar variant={variant} />
       <Drawer open={open} onClose={() => setOpen(false)} sx={{ display: { md: 'none' }, '& .MuiDrawer-paper': { width: 272 } }}><SidebarContent variant={variant} onNavigate={() => setOpen(false)} /></Drawer>
       <Box flex={1} minWidth={0}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" px={{ xs: 2, md: 4 }} py={1.75} borderBottom={1} borderColor="divider"
+        <Stack direction="row" alignItems="center" justifyContent="space-between" px={{ xs: 1, md: 4 }} py={{ xs: 0.5, md: 1.5 }} borderBottom={1} borderColor="divider"
           sx={{ position: 'sticky', top: 0, zIndex: 10, bgcolor: 'color-mix(in srgb, var(--mui-palette-background-paper, #fff) 80%, transparent)', backdropFilter: 'blur(14px)', backgroundColor: t => t.palette.mode === 'dark' ? 'rgba(23,20,31,.8)' : 'rgba(255,255,255,.8)' }}>
           <Stack direction="row" alignItems="center" spacing={1}>
             <IconButton sx={{ display: { md: 'none' } }} onClick={() => setOpen(true)} aria-label="Open menu"><MenuRounded /></IconButton>
