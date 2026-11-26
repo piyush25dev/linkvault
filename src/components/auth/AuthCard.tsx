@@ -74,8 +74,8 @@ export function AuthCard({ mode }: { mode: 'login' | 'register' }) {
             {isLogin && <Box textAlign="right" mt={-1}><Button size="small" onClick={() => setForgot({ open: true, email, busy: false, sent: false })} sx={{ fontWeight: 600 }}>Forgot password?</Button></Box>}
             <Button type="submit" variant="contained" size="large" disabled={busy} sx={{ py: 1.4 }}>{busy ? 'Please wait…' : isLogin ? 'Sign in' : 'Create account'}</Button>
           </Stack>
-          <Divider sx={{ my: 3 }}>or</Divider>
-          <Button fullWidth variant="outlined" size="large" startIcon={<Google />} onClick={google} color="inherit" sx={{ py: 1.3 }}>Continue with Google</Button>
+          {/* <Divider sx={{ my: 3 }}>or</Divider>
+          <Button fullWidth variant="outlined" size="large" startIcon={<Google />} onClick={google} color="inherit" sx={{ py: 1.3 }}>Continue with Google</Button> */}
           <Typography variant="body2" color="text.secondary" textAlign="center" mt={3}>
             {isLogin ? 'New here? ' : 'Already have an account? '}
             <Box component={Link} href={isLogin ? '/register' : '/login'} sx={{ color: 'primary.main', fontWeight: 700, textDecoration: 'none' }}>{isLogin ? 'Create an account' : 'Sign in'}</Box>
