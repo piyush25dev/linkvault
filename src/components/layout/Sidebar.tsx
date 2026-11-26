@@ -3,14 +3,14 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Avatar, Box, IconButton, Tooltip, Typography, useTheme } from '@mui/material';
-import { BookmarkRounded, DashboardRounded, StarRounded, FolderRounded, AccessTimeRounded, DeleteOutlineRounded, SettingsRounded, LogoutRounded, TipsAndUpdatesRounded } from '@mui/icons-material';
+import { BookmarkRounded, DashboardRounded, StarRounded, FolderRounded, AccessTimeRounded, DeleteOutlineRounded, SettingsRounded, LogoutRounded, TipsAndUpdatesRounded, PeopleRounded, GppMaybeRounded, HistoryRounded, ShieldRounded } from '@mui/icons-material';
 import { signOut } from 'firebase/auth';
 import { toast } from 'sonner';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 import { apiFetch } from '@/lib/api-client';
 
-type Stats = { bookmarks: number; favorites: number; collections: number; trash: number };
+type Stats = { bookmarks: number; favorites: number; collections: number; trash: number; openFlags?: number };
 type Item = { label: string; href: string; icon: React.ReactNode; stat?: keyof Stats };
 const groups: { title: string; items: Item[] }[] = [
   { title: 'Library', items: [
@@ -24,6 +24,20 @@ const groups: { title: string; items: Item[] }[] = [
     { label: 'Trash', href: '/dashboard/trash', icon: <DeleteOutlineRounded fontSize="small" />, stat: 'trash' },
   ] },
   { title: 'Account', items: [{ label: 'Settings', href: '/dashboard/settings', icon: <SettingsRounded fontSize="small" /> }] },
+];
+
+// Navigation for the super admin panel (same sidebar component, different links)
+const adminGroups: { title: string; items: Item[] }[] = [
+  { title: 'Manage', items: [
+    { label: 'Overview', href: '/admin', icon: <DashboardRounded fontSize="small" /> },
+    { label: 'Users', href: '/admin/users', icon: <PeopleRounded fontSize="small" /> },
+    { label: 'Moderation', href: '/admin/moderation', icon: <GppMaybeRounded fontSize="small" />, stat: 'openFlags' },
+  ] },
+  { title: 'Audit', items: [{ label: 'Activity log', href: '/admin/activity', icon: <HistoryRounded fontSize="small" /> }] },
+  { title: 'Account', items: [
+    { label: 'Settings', href: '/admin/settings', icon: <SettingsRounded fontSize="small" /> },
+    { label: 'My vault', href: '/dashboard', icon: <BookmarkRounded fontSize="small" /> },
+  ] },
 ];
 
 // Every colour the sidebar uses, for each theme. Switching light/dark swaps this whole set.
@@ -71,12 +85,17 @@ function NavItem({ item, active, count, onClick, c }: { item: Item; active: bool
 }
 
 // `rounded` makes it a floating panel on desktop; inside the mobile drawer it fills the edge.
-export function SidebarContent({ onNavigate, rounded = false }: { onNavigate?: () => void; rounded?: boolean }) {
+export function SidebarContent({ onNavigate, rounded = false, variant = 'user' }: { onNavigate?: () => void; rounded?: boolean; variant?: 'user' | 'admin' }) {
   const path = usePathname(); const router = useRouter(); const { user } = useAuth();
   const c = tokens(useTheme().palette.mode === 'dark');   // follows the app's light/dark theme
+  const admin = variant === 'admin'; const navGroups = admin ? adminGroups : groups;
   const [stats, setStats] = useState<Stats | null>(null);
   const name = user?.displayName || user?.email?.split('@')[0] || 'Your account';
-  useEffect(() => { if (user) apiFetch<{ stats: Stats }>('/api/dashboard').then(r => setStats(r.stats)).catch(() => {}); }, [user, path]);
+  useEffect(() => {
+    if (!user) return;   // badge counts refresh on every navigation
+    if (admin) apiFetch<{ items: unknown[] }>('/api/admin/flags?status=open').then(r => setStats({ bookmarks: 0, favorites: 0, collections: 0, trash: 0, openFlags: r.items.length })).catch(() => {});
+    else apiFetch<{ stats: Stats }>('/api/dashboard').then(r => setStats(r.stats)).catch(() => {});
+  }, [user, path, admin]);
 
   return (
     <Box sx={{ position: 'relative', overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column', p: 2, color: c.text, borderRadius: rounded ? 6 : 0,
@@ -85,18 +104,18 @@ export function SidebarContent({ onNavigate, rounded = false }: { onNavigate?: (
       '&::after': { content: '""', position: 'absolute', bottom: -80, right: -80, width: 240, height: 240, borderRadius: '50%', background: `radial-gradient(circle, ${c.glow2}, transparent 70%)`, pointerEvents: 'none' } }}>
       <Box sx={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
         <Box component={Link} href="/" onClick={onNavigate} sx={{ display: 'flex', alignItems: 'center', gap: 1.5, p: 1, mb: 2, textDecoration: 'none', color: c.text }}>
-          <Box sx={{ width: 40, height: 40, borderRadius: 3, display: 'grid', placeItems: 'center', color: '#fff', background: 'linear-gradient(135deg,#7ADCD3,#0E7C7B)', boxShadow: c.logoShadow }}><BookmarkRounded /></Box>
-          <Box><Typography fontWeight={800} fontSize={20} letterSpacing="-0.02em" lineHeight={1.1}>LinkVault</Typography><Typography sx={{ fontSize: 11.5, color: c.muted }}>Your link library</Typography></Box>
+          <Box sx={{ width: 40, height: 40, borderRadius: 3, display: 'grid', placeItems: 'center', color: '#fff', background: 'linear-gradient(135deg,#7ADCD3,#0E7C7B)', boxShadow: c.logoShadow }}>{admin ? <ShieldRounded /> : <BookmarkRounded />}</Box>
+          <Box><Typography fontWeight={800} fontSize={20} letterSpacing="-0.02em" lineHeight={1.1}>LinkVault</Typography><Typography sx={{ fontSize: 11.5, color: c.muted }}>{admin ? 'Super admin' : 'Your link library'}</Typography></Box>
         </Box>
 
         <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto', px: 1.5, mx: -1.5, scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
-          {groups.map(g => (
+          {navGroups.map(g => (
             <Box key={g.title} mb={2}>
               <Typography sx={{ px: 1, mb: 0.75, fontSize: 10.5, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: c.faint }}>{g.title}</Typography>
               <Box display="grid" gap={0.5}>
                 {g.items.map(item => (
                   <NavItem key={item.href} item={item} c={c} onClick={onNavigate} count={item.stat ? stats?.[item.stat] : undefined}
-                    active={item.href === '/dashboard' ? path === item.href : path.startsWith(item.href)} />
+                    active={item.href === '/dashboard' || item.href === '/admin' ? path === item.href : path.startsWith(item.href)} />
                 ))}
               </Box>
             </Box>
@@ -105,7 +124,7 @@ export function SidebarContent({ onNavigate, rounded = false }: { onNavigate?: (
 
         <Box sx={{ display: 'flex', mt: 1, mb: 1.5, p: 1.5, gap: 1.25, borderRadius: 4, border: '1px solid', borderColor: c.tipBorder, background: c.tipBg, '@media (max-height: 760px)': { display: 'none' } }}>
           <TipsAndUpdatesRounded sx={{ color: c.tipIcon, mt: 0.25 }} fontSize="small" />
-          <Typography sx={{ fontSize: 12.5, lineHeight: 1.5, color: c.tipText }}><b style={{ color: c.tipStrong }}>Quick tip:</b> paste a link and LinkVault fills in the title and description for you.</Typography>
+          <Typography sx={{ fontSize: 12.5, lineHeight: 1.5, color: c.tipText }}>{admin ? <><b style={{ color: c.tipStrong }}>Reminder:</b> review the Moderation queue regularly and act on open flags.</> : <><b style={{ color: c.tipStrong }}>Quick tip:</b> paste a link and LinkVault fills in the title and description for you.</>}</Typography>
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, p: 1.25, borderRadius: 4, background: c.userBg, border: '1px solid', borderColor: c.userBorder, backdropFilter: 'blur(8px)' }}>
@@ -122,6 +141,6 @@ export function SidebarContent({ onNavigate, rounded = false }: { onNavigate?: (
   );
 }
 
-export function Sidebar() {
-  return <Box sx={{ width: 288, flexShrink: 0, p: 1.5, height: '100vh', position: 'sticky', top: 0, display: { xs: 'none', md: 'block' } }}><SidebarContent rounded /></Box>;
+export function Sidebar({ variant = 'user' }: { variant?: 'user' | 'admin' }) {
+  return <Box sx={{ width: 288, flexShrink: 0, p: 1.5, height: '100vh', position: 'sticky', top: 0, display: { xs: 'none', md: 'block' } }}><SidebarContent rounded variant={variant} /></Box>;
 }

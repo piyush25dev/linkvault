@@ -1,8 +1,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // A user can read and write only their own bookmarks and collections.
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
+    // Profiles, activity logs, moderation flags and settings are written by the server (Admin SDK) only.
+    match /users/{userId} { allow read, write: if false; }
+    match /activityLogs/{id} { allow read, write: if false; }
+    match /flags/{id} { allow read, write: if false; }
+    match /settings/{id} { allow read, write: if false; }
   }
 }

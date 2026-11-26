@@ -8,6 +8,7 @@ import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndP
 import { toast } from 'sonner';
 import { friendlyAuthError as friendly } from '@/lib/auth-errors';
 import { auth } from '@/lib/firebase';
+import { isAdminEmail } from '@/lib/admin-config';
 import { useAuth } from '@/context/AuthContext';
 import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
@@ -15,7 +16,7 @@ import { ThemeToggle } from '@/components/layout/ThemeToggle';
 export function AuthCard({ mode }: { mode: 'login' | 'register' }) {
   const isLogin = mode === 'login'; const router = useRouter(); const { user, loading } = useAuth();
   const [name, setName] = useState(''); const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const [show, setShow] = useState(false); const [busy, setBusy] = useState(false);
-  useEffect(() => { if (!loading && user) router.replace('/dashboard'); }, [loading, user, router]);
+  useEffect(() => { if (!loading && user) router.replace(isAdminEmail(user.email) ? '/admin' : '/dashboard'); }, [loading, user, router]);
 
   const [forgot, setForgot] = useState({ open: false, email: '', busy: false, sent: false });
   const closeForgot = () => setForgot(f => ({ ...f, open: false }));
@@ -36,16 +37,17 @@ export function AuthCard({ mode }: { mode: 'login' | 'register' }) {
     if (!isLogin && !name.trim()) return void toast.error('Enter your name');
     if (!email.trim()) return void toast.error('Enter your email');
     if (password.length < 6) return void toast.error('Password must be at least 6 characters');
+    if (!isLogin && isAdminEmail(email)) return void toast.error('This email is reserved.');
     setBusy(true);
     try {
       if (isLogin) await signInWithEmailAndPassword(auth, email.trim(), password);
       else { const c = await createUserWithEmailAndPassword(auth, email.trim(), password); await updateProfile(c.user, { displayName: name.trim() }); }
-      router.replace('/dashboard');
+      router.replace(isAdminEmail(email) ? '/admin' : '/dashboard');
     } catch (err) { toast.error(friendly(err)); } finally { setBusy(false); }
   }
   async function google() {
     const provider = new GoogleAuthProvider();
-    try { await signInWithPopup(auth, provider); router.replace('/dashboard'); }
+    try { const cred = await signInWithPopup(auth, provider); router.replace(isAdminEmail(cred.user.email) ? '/admin' : '/dashboard'); }
     catch (err) { if ((err as { code?: string })?.code === 'auth/popup-blocked') await signInWithRedirect(auth, provider); else toast.error(friendly(err)); }
   }
 

@@ -40,7 +40,7 @@ export function PasswordCard() {
 
   const eye = <InputAdornment position="end"><IconButton edge="end" onClick={() => setShow(s => !s)} aria-label="Show passwords">{show ? <VisibilityOffRounded /> : <VisibilityRounded />}</IconButton></InputAdornment>;
   return (
-    <Paper variant="outlined" sx={{ p: 3, borderRadius: 4 }}>
+    <Paper variant="outlined" sx={{ p: { xs: 2.5, sm: 3 }, borderRadius: 4, minWidth: 0 }}>
       <Typography fontWeight={800}>Password</Typography>
       {!hasPassword ? (
         <Typography color="text.secondary" variant="body2" mt={0.5}>You sign in with Google, so there’s no LinkVault password to change.</Typography>
@@ -54,7 +54,7 @@ export function PasswordCard() {
             <Button type="submit" variant="contained" disabled={busy} sx={{ alignSelf: 'flex-start' }}>{busy ? 'Updating…' : 'Update password'}</Button>
           </Stack>
           <Divider sx={{ my: 2.5 }} />
-          <Typography variant="body2" color="text.secondary" mb={1.5}>Forgot your current password? We’ll email a reset link to <b>{user?.email}</b>.</Typography>
+          <Typography variant="body2" color="text.secondary" mb={1.5} sx={{ overflowWrap: 'anywhere' }}>Forgot your current password? We’ll email a reset link to <b>{user?.email}</b>.</Typography>
           <Button variant="outlined" color="inherit" onClick={emailLink} disabled={mailing}>{mailing ? 'Sending…' : 'Email me a reset link'}</Button>
         </>
       )}

@@ -43,7 +43,7 @@ export function AppThemeProvider({ children }: { children: React.ReactNode }) {
           backgroundAttachment: 'fixed', WebkitFontSmoothing: 'antialiased',
         }, '::selection': { background: alpha(main, 0.3) } } },
         MuiPaper: { styleOverrides: { root: { backgroundImage: 'none' } } },
-        MuiCard: { styleOverrides: { root: { borderRadius: 18, border: `1px solid ${dark ? 'rgba(255,255,255,.08)' : 'rgba(14,124,123,.12)'}`, boxShadow: dark ? '0 12px 30px -16px rgba(0,0,0,.7)' : '0 10px 28px -16px rgba(6,32,33,.18)', transition: 'transform .25s ease, box-shadow .25s ease, border-color .25s ease', '&:hover': { transform: 'translateY(-3px)', borderColor: alpha(main, 0.4), boxShadow: `0 20px 40px -18px ${alpha(main, 0.45)}` } } } },
+        MuiCard: { styleOverrides: { root: { borderRadius: 18, border: `1px solid ${dark ? 'rgba(255,255,255,.08)' : 'rgba(14,124,123,.12)'}`, boxShadow: dark ? '0 12px 30px -16px rgba(0,0,0,.7)' : '0 10px 28px -16px rgba(6,32,33,.18)', transition: 'transform .25s ease, box-shadow .25s ease, border-color .25s ease', '&:hover': { borderColor: alpha(main, 0.4), boxShadow: `0 0 20px 5px ${alpha(main, 0.25)}` } } } },
         MuiButton: {
           defaultProps: { disableElevation: true },
           styleOverrides: {

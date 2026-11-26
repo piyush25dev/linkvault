@@ -13,7 +13,38 @@ type Stats = { bookmarks: number; favorites: number; collections: number; trash:
 export default function Dashboard() {
   const { user } = useAuth();
   const [stats, setStats] = useState<Stats | null>(null);
-  useEffect(() => { if (user) apiFetch<{ stats: Stats }>('/api/dashboard').then(r => setStats(r.stats)).catch(() => setStats({ bookmarks: 0, favorites: 0, collections: 0, trash: 0 })); }, [user]);
+  const userId = user?.uid;
+
+  useEffect(() => {
+    if (!userId) {
+      setStats(null);
+      return;
+    }
+
+    let active = true;
+
+    apiFetch<{ stats: Stats }>('/api/dashboard')
+      .then((response) => {
+        if (active) setStats(response.stats);
+      })
+      .catch((error) => {
+        console.error('Dashboard API error:', error);
+
+        if (active) {
+          setStats({
+            bookmarks: 0,
+            favorites: 0,
+            collections: 0,
+            trash: 0,
+          });
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [userId]);
+  
   const first = (user?.displayName || user?.email?.split('@')[0] || '').split(' ')[0];
   const cards = [
     { label: 'Total bookmarks', value: stats?.bookmarks, icon: <BookmarkRounded />, href: '/dashboard/bookmarks', c: '#0E7C7B' },
