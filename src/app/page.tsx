@@ -143,62 +143,62 @@ function LandingHeader() {
         </IconButton>
 
         <Menu
-  anchorEl={anchor}
-  open={Boolean(anchor)}
-  onClose={close}
-  anchorOrigin={{
-    vertical: 'bottom',
-    horizontal: 'right',
-  }}
-  transformOrigin={{
-    vertical: 'top',
-    horizontal: 'right',
-  }}
-  slotProps={{
-    paper: {
-      sx: {
-        minWidth: 185,
-        mt: 1,
-      },
-    },
-  }}
->
-  {isLoggedIn
-    ? [
-        <MenuItem
-          key="dashboard"
-          component={Link}
-          href="/dashboard"
-          onClick={close}
-        >
-          <DashboardRounded sx={{ mr: 1.5, fontSize: 20 }} />
-          Dashboard
-        </MenuItem>,
-      ]
-    : [
-        <MenuItem
-          key="login"
-          component={Link}
-          href="/login"
-          onClick={close}
-        >
-          Log in
-        </MenuItem>,
-
-        <MenuItem
-          key="register"
-          component={Link}
-          href="/register"
-          onClick={close}
-          sx={{
-            fontWeight: 700,
-            color: 'primary.main',
+          anchorEl={anchor}
+          open={Boolean(anchor)}
+          onClose={close}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                minWidth: 185,
+                mt: 1,
+              },
+            },
           }}
         >
-          Get started
-        </MenuItem>,
-      ]}
-</Menu>
+          {isLoggedIn
+            ? [
+              <MenuItem
+                key="dashboard"
+                component={Link}
+                href="/dashboard"
+                onClick={close}
+              >
+                <DashboardRounded sx={{ mr: 1.5, fontSize: 20 }} />
+                Dashboard
+              </MenuItem>,
+            ]
+            : [
+              <MenuItem
+                key="login"
+                component={Link}
+                href="/login"
+                onClick={close}
+              >
+                Log in
+              </MenuItem>,
+
+              <MenuItem
+                key="register"
+                component={Link}
+                href="/register"
+                onClick={close}
+                sx={{
+                  fontWeight: 700,
+                  color: 'primary.main',
+                }}
+              >
+                Get started
+              </MenuItem>,
+            ]}
+        </Menu>
       </Stack>
     </Stack>
   );
