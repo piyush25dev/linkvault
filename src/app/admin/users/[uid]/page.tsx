@@ -36,7 +36,7 @@ export default function UserDetail() {
       <Box display="grid" gap={3}>
         <Paper variant="outlined" sx={{ p: { xs: 2, sm: 3 }, borderRadius: 4, overflowWrap: 'anywhere' }}>
           <Stack direction={{ xs: 'column', md: 'row' }} gap={3} justifyContent="space-between">
-            <Stack direction="row" spacing={2} alignItems="center" minWidth={0}>
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems="center" minWidth={0}>
               <Avatar src={u.photoURL ?? undefined} sx={{ width: 64, height: 64, fontSize: 26 }}>{(u.displayName || u.email)[0]?.toUpperCase()}</Avatar>
               <Box minWidth={0}>
                 <Stack direction="row" gap={1} flexWrap="wrap" alignItems="center"><Typography variant="h6" fontWeight={800}>{u.displayName || 'No name'}</Typography><StatusChip disabled={u.disabled} />{u.isSuperAdmin && <Chip size="small" color="error" label="Super admin" />}</Stack>

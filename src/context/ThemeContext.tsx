@@ -187,7 +187,7 @@ export function AppThemeProvider({ children }: { children: React.ReactNode }) {
         MuiButton: {
           defaultProps: { disableElevation: true },
           styleOverrides: {
-            root: { borderRadius: 12, paddingInline: 18, transition: 'all .2s ease' },
+            root: { borderRadius: 12, paddingInline: 8, transition: 'all .2s ease' },
             containedPrimary: { backgroundImage: dark ? 'linear-gradient(135deg,#8BE8DF,#4FD1C5)' : 'linear-gradient(135deg,#1B9693,#095E5F)', boxShadow: `0 8px 18px -8px ${alpha(main, 0.7)}`, '&:hover': { filter: 'brightness(1.07)', transform: 'translateY(-1px)' } },
           },
         },

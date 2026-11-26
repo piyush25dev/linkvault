@@ -22,7 +22,7 @@ export default function UsersPage() {
   }, [dq, status, page, tick]);
 
   return (
-    <AdminShell title="Users" subtitle="Every account, with its activity" action={<Button variant="contained" startIcon={<AddRounded />} onClick={() => setCreating(true)}>Add user</Button>}>
+    <AdminShell title="Users" subtitle="Every account, with its activity" action={<Button variant="contained" size="small" startIcon={<AddRounded />} onClick={() => setCreating(true)}>Add user</Button>}>
       <Stack direction={{ xs: 'column', sm: 'row' }} gap={1.5} mb={3}>
         <TextField size="small" placeholder="Search name, email or ID…" value={q} onChange={e => setQ(e.target.value)} sx={{ flex: 1, maxWidth: 420 }} slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRounded fontSize="small" /></InputAdornment> } }} />
         <TextField select size="small" label="Status" value={status} onChange={e => setStatus(e.target.value)} sx={{ minWidth: 150 }}><MenuItem value="all">All</MenuItem><MenuItem value="active">Active</MenuItem><MenuItem value="suspended">Suspended</MenuItem></TextField>

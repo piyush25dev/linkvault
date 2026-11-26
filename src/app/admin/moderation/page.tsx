@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Alert, Box, Button, Chip, MenuItem, Paper, Stack, Tab, Tabs, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Chip, MenuItem, Paper, Stack, Tab, Tabs, TextField, Tooltip, Typography } from '@mui/material';
 import { ContentCopyRounded, RadarRounded } from '@mui/icons-material';
 import { toast } from 'sonner';
 import { AdminShell } from '@/components/admin/AdminShell';
@@ -36,7 +36,37 @@ export default function ModerationPage() {
 
   return (
     <AdminShell title="Moderation" subtitle="Adult, illegal and unsafe links saved by users"
-      action={<Button variant="outlined" startIcon={<RadarRounded />} onClick={scanAll} disabled={scanning}>{scanning ? 'Scanning…' : 'Scan all bookmarks'}</Button>}>
+      action={<Tooltip title="Scan all bookmarks" arrow>
+        <Button
+          variant="outlined"
+          startIcon={<RadarRounded />}
+          onClick={scanAll}
+          disabled={scanning}
+          size="medium"
+          sx={{
+            minWidth: { xs: 42, sm: 'auto' },
+            width: { xs: 42, sm: 'auto' },
+            height: 40,
+            px: { xs: 0, sm: 2 },
+            flexShrink: 0,
+            '& .MuiButton-startIcon': {
+              mr: { xs: 0, sm: 1 },
+              ml: 0,
+            },
+          }}
+        >
+          <Typography
+            component="span"
+            sx={{
+              display: { xs: 'none', sm: 'inline' },
+              fontSize: 13,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {scanning ? 'Scanning…' : 'Scan all bookmarks'}
+          </Typography>
+        </Button>
+      </Tooltip>}>
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3 }}><Tab label="Review queue" /><Tab label="Rules" /></Tabs>
 
       {tab === 0 && (

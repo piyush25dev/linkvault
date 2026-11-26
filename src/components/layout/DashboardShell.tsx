@@ -23,7 +23,7 @@ export function DashboardShell({ children, title, subtitle, variant = 'user', ac
           sx={{ position: 'sticky', top: 0, zIndex: 10, bgcolor: 'color-mix(in srgb, var(--mui-palette-background-paper, #fff) 80%, transparent)', backdropFilter: 'blur(14px)', backgroundColor: t => t.palette.mode === 'dark' ? 'rgba(23,20,31,.8)' : 'rgba(255,255,255,.8)' }}>
           <Stack direction="row" alignItems="center" spacing={1}>
             <IconButton sx={{ display: { md: 'none' } }} onClick={() => setOpen(true)} aria-label="Open menu"><MenuRounded /></IconButton>
-            <Box><Typography fontWeight={800} fontSize={20} letterSpacing="-0.02em" lineHeight={1.2}>{title}</Typography>{subtitle && <Typography variant="caption" color="text.secondary" sx={{display: {xs: 'none', sm: 'block'}}}>{subtitle}</Typography>}</Box>
+            <Box><Typography variant='h6' letterSpacing="-0.02em" lineHeight={1.2}>{title}</Typography>{subtitle && <Typography variant="caption" color="text.secondary" sx={{display: {xs: 'none', sm: 'block'}}}>{subtitle}</Typography>}</Box>
           </Stack>
           <Stack direction="row" alignItems="center" spacing={0.5}>
             {action}
