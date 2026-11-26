@@ -53,16 +53,106 @@ export default function AdminOverview() {
               ))}
             </Paper>
           </Box>
-          <Paper variant="outlined" sx={{ p: 3, borderRadius: 4 }}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={1.5}><Typography fontWeight={800}>Latest activity</Typography><Button component={Link} href="/admin/activity" size="small" endIcon={<ArrowForwardRounded />}>View all</Button></Stack>
-            {s.recentActivity.map(a => (
-              <Stack key={a.id} direction="row" spacing={1.5} alignItems="center" py={1} sx={{ borderTop: 1, borderColor: 'divider' }}>
-                <Box width={150} flexShrink={0}><TypeChip type={a.type} /></Box>
-                <Typography variant="body2" noWrap flex={1} minWidth={0}><b>{a.email ?? a.uid}</b> {a.details && `· ${a.details}`}</Typography>
-                <Typography variant="caption" color="text.secondary" flexShrink={0}>{ago(a.createdAt)}</Typography>
-              </Stack>
+
+          <Paper
+            variant="outlined"
+            sx={{
+              p: { xs: 2, sm: 3 },
+              borderRadius: 4,
+              minWidth: 0,
+            }}
+          >
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              mb={2}
+              gap={1}
+            >
+              <Typography fontWeight={800} fontSize={{ xs: 15, sm: 17 }}>
+                Latest activity
+              </Typography>
+
+              <Button
+                component={Link}
+                href="/admin/activity"
+                size="small"
+                endIcon={<ArrowForwardRounded />}
+                sx={{ flexShrink: 0 }}
+              >
+                View all
+              </Button>
+            </Stack>
+
+            {s.recentActivity.map((a) => (
+              <Box
+                key={a.id}
+                sx={{
+                  py: 1.5,
+                  borderTop: 1,
+                  borderColor: 'divider',
+                  minWidth: 0,
+                }}
+              >
+                {/* Desktop and mobile header */}
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  gap={1}
+                  mb={{ xs: 0.75, sm: 0 }}
+                >
+                  <Box sx={{ minWidth: 0 }}>
+                    <TypeChip type={a.type} />
+                  </Box>
+
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{
+                      flexShrink: 0,
+                      whiteSpace: 'nowrap',
+                      fontSize: { xs: 10, sm: 12 },
+                    }}
+                  >
+                    {ago(a.createdAt)}
+                  </Typography>
+                </Stack>
+
+                {/* User and activity details */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    minWidth: 0,
+                    overflowWrap: 'anywhere',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  <Box component="b" sx={{ fontWeight: 700 }}>
+                    {a.email ?? a.uid}
+                  </Box>
+
+                  {a.details && (
+                    <Box component="span" color="text.secondary">
+                      {' · '}{a.details}
+                    </Box>
+                  )}
+                </Typography>
+              </Box>
             ))}
+
+            {s.recentActivity.length === 0 && (
+              <Typography
+                color="text.secondary"
+                variant="body2"
+                textAlign="center"
+                py={3}
+              >
+                No recent activity found.
+              </Typography>
+            )}
           </Paper>
+
         </Box>
       )}
     </AdminShell>
